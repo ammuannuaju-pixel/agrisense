@@ -15,7 +15,7 @@ export default function Dashboard() {
         getAllReadings(),
         getWeather(10.53, 76.21),
       ]);
-      setReadings(rRes.data);
+      setReadings(Array.isArray(rRes.data) ? rRes.data : []);
       setWeather(wRes.data);
     } catch (err) {
       console.error(err);
@@ -32,8 +32,10 @@ export default function Dashboard() {
 
   if (loading) return <p>{t("loading")}</p>;
 
-  const avg = (key) =>
-    (readings.reduce((sum, r) => sum + r[key], 0) / readings.length).toFixed(1);
+  const avg = (key) => {
+    if (!readings || readings.length === 0) return 0;
+    return (readings.reduce((sum, r) => sum + (r[key] || 0), 0) / readings.length).toFixed(1);
+  };
 
   return (
     <div>
@@ -84,16 +86,16 @@ export default function Dashboard() {
               {t("localWeather")}
             </p>
             <p style={{ fontSize: "36px", fontWeight: "700", margin: "0 0 16px" }}>
-              {weather.current.temperature_2m}°C
+              {weather.current?.temperature_2m}°C
             </p>
             <p style={{ opacity: 0.7, margin: "0 0 6px" }}>
-              {t("humidity")}: {weather.current.relative_humidity_2m}%
+              {t("humidity")}: {weather.current?.relative_humidity_2m}%
             </p>
             <p style={{ opacity: 0.7, margin: "0 0 6px" }}>
-              Wind: {weather.current.windspeed_10m} km/h
+              Wind: {weather.current?.windspeed_10m} km/h
             </p>
             <p style={{ opacity: 0.7, margin: 0 }}>
-              Rain: {weather.current.rain} mm
+              Rain: {weather.current?.rain} mm
             </p>
           </div>
         )}
