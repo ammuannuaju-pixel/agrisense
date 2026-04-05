@@ -16,6 +16,8 @@ export default function WaterUsage() {
   if (loading) return <p>Loading water usage...</p>;
   if (!data || !data.weeklyTotals) return <p>No water data available.</p>;
 
+  const safe = (val) => (typeof val === "number" ? val : 0);
+
   return (
     <div style={{ maxWidth: "900px" }}>
       <h1 style={{ fontFamily: "Georgia, serif", color: "#1a3c1a", marginBottom: "8px" }}>
@@ -31,10 +33,10 @@ export default function WaterUsage() {
         gap: "16px", marginBottom: "32px",
       }}>
         {[
-          { label: "Wadakkanchery Farm", value: data.weeklyTotals.northField, color: "#2d6a2d" },
-          { label: "Irinjalakuda Fields", value: data.weeklyTotals.southField, color: "#2980b9" },
-          { label: "Chalakudy Farm", value: data.weeklyTotals.eastOrchard, color: "#e67e22" },
-          { label: "Total This Week", value: data.weeklyGrandTotal, color: "#1a3c1a" },
+          { label: "Wadakkanchery Farm", value: safe(data.weeklyTotals.northField), color: "#2d6a2d" },
+          { label: "Irinjalakuda Fields", value: safe(data.weeklyTotals.southField), color: "#2980b9" },
+          { label: "Chalakudy Farm", value: safe(data.weeklyTotals.eastOrchard), color: "#e67e22" },
+          { label: "Total This Week", value: safe(data.weeklyGrandTotal), color: "#1a3c1a" },
         ].map(({ label, value, color }) => (
           <div key={label} style={{
             background: "#fff", borderRadius: "12px", padding: "20px",
@@ -42,7 +44,7 @@ export default function WaterUsage() {
           }}>
             <p style={{ color: "#888", fontSize: "12px", marginBottom: "8px" }}>{label}</p>
             <p style={{ fontSize: "22px", fontWeight: "700", color, margin: 0 }}>
-              {(value || 0).toLocaleString()}
+              {value.toLocaleString()}
             </p>
             <p style={{ color: "#aaa", fontSize: "12px", margin: 0 }}>litres</p>
           </div>
@@ -87,13 +89,13 @@ export default function WaterUsage() {
           </thead>
           <tbody>
             {(data.daily || []).map((day, i) => {
-              const total = (day.northField || 0) + (day.southField || 0) + (day.eastOrchard || 0);
+              const total = safe(day.northField) + safe(day.southField) + safe(day.eastOrchard);
               return (
                 <tr key={i} style={{ borderBottom: "1px solid #f0f0f0" }}>
                   <td style={{ padding: "10px", color: "#555" }}>{day.date}</td>
-                  <td style={{ padding: "10px", fontWeight: "600", color: "#2d6a2d" }}>{day.northField} L</td>
-                  <td style={{ padding: "10px", fontWeight: "600", color: "#2980b9" }}>{day.southField} L</td>
-                  <td style={{ padding: "10px", fontWeight: "600", color: "#e67e22" }}>{day.eastOrchard} L</td>
+                  <td style={{ padding: "10px", fontWeight: "600", color: "#2d6a2d" }}>{safe(day.northField)} L</td>
+                  <td style={{ padding: "10px", fontWeight: "600", color: "#2980b9" }}>{safe(day.southField)} L</td>
+                  <td style={{ padding: "10px", fontWeight: "600", color: "#e67e22" }}>{safe(day.eastOrchard)} L</td>
                   <td style={{ padding: "10px", fontWeight: "700", color: "#1a3c1a" }}>{total.toLocaleString()} L</td>
                 </tr>
               );
