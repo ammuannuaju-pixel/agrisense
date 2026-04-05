@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { API_URL } from "../api/config.js";
 
 const categories = ["Fertilizer", "Water", "Labour", "Pesticide", "Equipment", "Other"];
 const fieldNames = ["Wadakkanchery Farm", "Irinjalakuda Fields", "Chalakudy Farm"];
@@ -17,7 +18,8 @@ export default function CostTracker() {
   });
 
   const fetchData = () => {
-    axios.get("http://localhost:5000/api/costs")
+    axios.get(`${API_URL}/api/costs`)
+
       .then(res => { setData(res.data); setLoading(false); });
   };
 
@@ -25,7 +27,7 @@ export default function CostTracker() {
 
   const addCost = async () => {
     if (!form.description || !form.amount) return;
-    await axios.post("http://localhost:5000/api/costs/add", form);
+    await axios.post(`${API_URL}/api/costs/add`, form);
     setShowForm(false);
     setForm({
       field: "Wadakkanchery Farm",

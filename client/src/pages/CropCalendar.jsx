@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { API_URL } from "../api/config.js";
 
 export default function CropCalendar() {
   const [calendars, setCalendars] = useState([]);
@@ -7,7 +8,7 @@ export default function CropCalendar() {
   const [selected, setSelected] = useState(null);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/calendar")
+    axios.get(`${API_URL}/api/calendar`)
       .then(res => {
         setCalendars(res.data);
         setSelected(res.data[0]);

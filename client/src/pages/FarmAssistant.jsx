@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { API_URL } from "../api/config.js";
 
 const suggestions = [
   "My rice leaves are turning yellow, what's wrong?",
@@ -25,7 +26,7 @@ export default function FarmAssistant() {
     setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/assistant", { question: userQuestion });
+      const res = await axios.post("/api/assistant", { question: userQuestion });
       setMessages(prev => [...prev, { role: "assistant", text: res.data.answer }]);
     } catch (err) {
       setMessages(prev => [...prev, { role: "assistant", text: "Sorry, I'm unavailable right now. Please try again." }]);

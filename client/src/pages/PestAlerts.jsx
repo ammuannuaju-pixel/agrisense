@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { API_URL } from "../api/config.js";
 
 export default function PestAlerts() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/pests")
+    axios.get(`${API_URL}/api/pests`)
       .then(res => { setData(res.data); setLoading(false); });
   }, []);
 

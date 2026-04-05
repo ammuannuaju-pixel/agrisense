@@ -19,7 +19,14 @@ const { generateAlerts } = require("./alertsEngine");
 const { fields, getSensorReading } = require("./mockSensors");
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://agrisense.pages.dev",
+    /\.pages\.dev$/,
+  ],
+  credentials: true,
+}));
 app.use(express.json());
 
 const PORT = process.env.PORT || 5000;

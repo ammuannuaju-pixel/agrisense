@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-
+import { API_URL } from "../api/config.js";
 export default function WaterUsage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/water")
+    axios.get(`${API_URL}/api/water`)
       .then(res => { setData(res.data); setLoading(false); });
   }, []);
 

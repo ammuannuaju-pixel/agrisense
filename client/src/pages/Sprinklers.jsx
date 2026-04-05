@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { API_URL } from "../api/config.js";
 
 export default function Sprinklers() {
   const [sprinklers, setSprinklers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchSprinklers = () => {
-    axios.get("http://localhost:5000/api/sprinklers")
+    axios.get(`${API_URL}/api/sprinklers`)
       .then(res => { setSprinklers(res.data); setLoading(false); });
   };
 
@@ -17,17 +18,17 @@ export default function Sprinklers() {
   }, []);
 
   const toggle = async (id, active) => {
-    await axios.post(`http://localhost:5000/api/sprinklers/toggle/${id}`, { active });
+    await axios.post(`${API_URL}/api/sprinklers/toggle/${id}`, { active });
     fetchSprinklers();
   };
 
   const toggleAuto = async (id, auto) => {
-    await axios.post(`http://localhost:5000/api/sprinklers/auto/${id}`, { auto });
+    await axios.post(`${API_URL}/api/sprinklers/auto/${id}`, { auto });
     fetchSprinklers();
   };
 
   const setThreshold = async (id, threshold) => {
-    await axios.post(`http://localhost:5000/api/sprinklers/threshold/${id}`, { threshold: parseInt(threshold) });
+    await axios.post(`${API_URL}/api/sprinklers/threshold/${id}`, { threshold: parseInt(threshold) });
     fetchSprinklers();
   };
 
@@ -49,7 +50,6 @@ export default function Sprinklers() {
             border: `2px solid ${s.active ? "#2d6a2d" : "#e8e8e8"}`,
             transition: "border 0.3s",
           }}>
-            {/* Header */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
               <div>
                 <h3 style={{ color: "#1a3c1a", margin: 0, fontFamily: "Georgia, serif" }}>{s.name}</h3>
@@ -57,43 +57,33 @@ export default function Sprinklers() {
                   {s.auto ? "Auto irrigation enabled" : "Manual control"}
                 </p>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <span style={{
-                  background: s.active ? "#2d6a2d" : "#e8e8e8",
-                  color: s.active ? "#fff" : "#888",
-                  borderRadius: "20px", padding: "4px 14px", fontSize: "13px", fontWeight: "600",
-                }}>
-                  {s.active ? "💧 ON" : "OFF"}
-                </span>
-              </div>
+              <span style={{
+                background: s.active ? "#2d6a2d" : "#e8e8e8",
+                color: s.active ? "#fff" : "#888",
+                borderRadius: "20px", padding: "4px 14px", fontSize: "13px", fontWeight: "600",
+              }}>
+                {s.active ? "💧 ON" : "OFF"}
+              </span>
             </div>
 
-            {/* Controls */}
             <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-              {/* Manual toggle */}
-              <button
-                onClick={() => toggle(s.id, !s.active)}
-                style={{
-                  padding: "10px 20px", borderRadius: "8px", border: "none",
-                  background: s.active ? "#e74c3c" : "#2d6a2d",
-                  color: "#fff", fontWeight: "600", cursor: "pointer", fontSize: "14px",
-                }}>
+              <button onClick={() => toggle(s.id, !s.active)} style={{
+                padding: "10px 20px", borderRadius: "8px", border: "none",
+                background: s.active ? "#e74c3c" : "#2d6a2d",
+                color: "#fff", fontWeight: "600", cursor: "pointer", fontSize: "14px",
+              }}>
                 {s.active ? "Turn OFF" : "Turn ON"}
               </button>
 
-              {/* Auto mode toggle */}
-              <button
-                onClick={() => toggleAuto(s.id, !s.auto)}
-                style={{
-                  padding: "10px 20px", borderRadius: "8px",
-                  border: "2px solid #2d6a2d",
-                  background: s.auto ? "#f0f7f0" : "#fff",
-                  color: "#2d6a2d", fontWeight: "600", cursor: "pointer", fontSize: "14px",
-                }}>
+              <button onClick={() => toggleAuto(s.id, !s.auto)} style={{
+                padding: "10px 20px", borderRadius: "8px",
+                border: "2px solid #2d6a2d",
+                background: s.auto ? "#f0f7f0" : "#fff",
+                color: "#2d6a2d", fontWeight: "600", cursor: "pointer", fontSize: "14px",
+              }}>
                 {s.auto ? "Auto: ON" : "Auto: OFF"}
               </button>
 
-              {/* Threshold control */}
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <label style={{ fontSize: "13px", color: "#666" }}>Moisture threshold:</label>
                 <input
@@ -108,7 +98,6 @@ export default function Sprinklers() {
               </div>
             </div>
 
-            {/* Auto irrigation info */}
             {s.auto && (
               <div style={{
                 marginTop: "16px", background: "#f0f7f0", borderRadius: "8px",
