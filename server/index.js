@@ -20,12 +20,8 @@ const { fields, getSensorReading } = require("./mockSensors");
 
 const app = express();
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://agrisense.pages.dev",
-    /\.pages\.dev$/,
-  ],
-  credentials: true,
+  origin: "*",
+  credentials: false,
 }));
 app.use(express.json());
 
