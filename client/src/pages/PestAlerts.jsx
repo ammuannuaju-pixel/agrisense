@@ -8,7 +8,7 @@ export default function PestAlerts() {
 
   useEffect(() => {
     axios.get(`${API_URL}/api/pests`)
-      .then(res => { setData(res.data); setLoading(false); });
+  .then(res => { setData(Array.isArray(res.data) ? res.data : []); setLoading(false); });
   }, []);
 
   if (loading) return <p>Analyzing pest risks...</p>;

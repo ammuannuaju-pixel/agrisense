@@ -6,10 +6,10 @@ export default function Alerts() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getAlerts().then(res => {
-      setAlerts(res.data);
-      setLoading(false);
-    });
+   getAlerts().then(res => {
+  setAlerts(Array.isArray(res.data) ? res.data : []);
+  setLoading(false);
+});
   }, []);
 
   if (loading) return <p>Loading alerts...</p>;

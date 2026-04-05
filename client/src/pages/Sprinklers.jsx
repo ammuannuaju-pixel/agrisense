@@ -8,7 +8,7 @@ export default function Sprinklers() {
 
   const fetchSprinklers = () => {
     axios.get(`${API_URL}/api/sprinklers`)
-      .then(res => { setSprinklers(res.data); setLoading(false); });
+  .then(res => { setSprinklers(Array.isArray(res.data) ? res.data : []); setLoading(false); });
   };
 
   useEffect(() => {

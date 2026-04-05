@@ -7,9 +7,9 @@ export default function Fields() {
 
   useEffect(() => {
     getAllReadings().then(res => {
-      setFields(res.data);
-      setLoading(false);
-    });
+  setFields(Array.isArray(res.data) ? res.data : []);
+  setLoading(false);
+});
   }, []);
 
   if (loading) return <p>Loading fields...</p>;
