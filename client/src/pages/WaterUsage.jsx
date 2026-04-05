@@ -2,16 +2,19 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { API_URL } from "../api/config.js";
+
 export default function WaterUsage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios.get(`${API_URL}/api/water`)
-      .then(res => { setData(res.data); setLoading(false); });
+      .then(res => { setData(res.data || null); setLoading(false); })
+      .catch(() => setLoading(false));
   }, []);
 
   if (loading) return <p>Loading water usage...</p>;
+  if (!data || !data.weeklyTotals) return <p>No water data available.</p>;
 
   return (
     <div style={{ maxWidth: "900px" }}>
@@ -22,7 +25,6 @@ export default function WaterUsage() {
         Daily irrigation water consumption per field · Last 7 days
       </p>
 
-      {/* Weekly totals */}
       <div style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
@@ -40,14 +42,13 @@ export default function WaterUsage() {
           }}>
             <p style={{ color: "#888", fontSize: "12px", marginBottom: "8px" }}>{label}</p>
             <p style={{ fontSize: "22px", fontWeight: "700", color, margin: 0 }}>
-              {value.toLocaleString()}
+              {(value || 0).toLocaleString()}
             </p>
             <p style={{ color: "#aaa", fontSize: "12px", margin: 0 }}>litres</p>
           </div>
         ))}
       </div>
 
-      {/* Bar chart */}
       <div style={{
         background: "#fff", borderRadius: "12px", padding: "24px",
         border: "1px solid #e8e8e8", marginBottom: "24px",
@@ -56,7 +57,7 @@ export default function WaterUsage() {
           Daily Water Usage (Litres)
         </h3>
         <ResponsiveContainer width="100%" height={280}>
-          <BarChart data={data.daily}>
+          <BarChart data={data.daily || []}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
             <XAxis dataKey="date" tick={{ fontSize: 11 }} />
             <YAxis tick={{ fontSize: 11 }} />
@@ -69,7 +70,6 @@ export default function WaterUsage() {
         </ResponsiveContainer>
       </div>
 
-      {/* Daily table */}
       <div style={{
         background: "#fff", borderRadius: "12px", padding: "24px",
         border: "1px solid #e8e8e8", overflowX: "auto",
@@ -86,8 +86,8 @@ export default function WaterUsage() {
             </tr>
           </thead>
           <tbody>
-            {data.daily.map((day, i) => {
-              const total = day.northField + day.southField + day.eastOrchard;
+            {(data.daily || []).map((day, i) => {
+              const total = (day.northField || 0) + (day.southField || 0) + (day.eastOrchard || 0);
               return (
                 <tr key={i} style={{ borderBottom: "1px solid #f0f0f0" }}>
                   <td style={{ padding: "10px", color: "#555" }}>{day.date}</td>

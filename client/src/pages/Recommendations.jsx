@@ -8,10 +8,12 @@ export default function Recommendations() {
 
   useEffect(() => {
     axios.get(`${API_URL}/api/recommendations`)
-      .then(res => { setData(res.data); setLoading(false); });
+      .then(res => { setData(res.data || null); setLoading(false); })
+      .catch(() => setLoading(false));
   }, []);
 
   if (loading) return <p>Analyzing weather and soil data...</p>;
+  if (!data || !data.forecast) return <p>Recommendation data unavailable.</p>;
 
   const riskColor = { low: "#2ecc71", medium: "#f39c12", high: "#e74c3c" };
 
@@ -24,7 +26,6 @@ export default function Recommendations() {
         Based on 5-day weather forecast + soil nitrogen levels
       </p>
 
-      {/* Main recommendation */}
       <div style={{
         background: data.safeTofertilize ? "#f0f7f0" : "#fff5f0",
         border: `2px solid ${data.safeTofertilize ? "#2d6a2d" : "#e74c3c"}`,
@@ -44,7 +45,6 @@ export default function Recommendations() {
         )}
       </div>
 
-      {/* Nitrogen leaching risk */}
       <div style={{
         background: "#fff", borderRadius: "12px", padding: "24px",
         border: "1px solid #e8e8e8", marginBottom: "20px",
@@ -65,7 +65,6 @@ export default function Recommendations() {
         <p style={{ color: "#555" }}>{data.nitrogenAdvice}</p>
       </div>
 
-      {/* 5-day forecast */}
       <div style={{
         background: "#fff", borderRadius: "12px", padding: "24px",
         border: "1px solid #e8e8e8", marginBottom: "20px",
@@ -76,7 +75,7 @@ export default function Recommendations() {
           gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))",
           gap: "12px",
         }}>
-          {data.forecast.time.map((day, i) => (
+          {(data.forecast.time || []).map((day, i) => (
             <div key={day} style={{
               background: data.forecast.precipitation_sum[i] > 10 ? "#fff5f0" : "#f8f9f4",
               borderRadius: "10px", padding: "16px", textAlign: "center",
@@ -99,14 +98,13 @@ export default function Recommendations() {
         </div>
       </div>
 
-      {/* Leaching prevention tips */}
       <div style={{
         background: "#fff", borderRadius: "12px", padding: "24px",
         border: "1px solid #e8e8e8",
       }}>
         <h3 style={{ color: "#1a3c1a", marginBottom: "16px" }}>How to Prevent Nitrogen Leaching</h3>
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          {data.leachingTips.map((tip, i) => (
+          {(data.leachingTips || []).map((tip, i) => (
             <div key={i} style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
               <span style={{
                 background: "#f0f7f0", borderRadius: "50%", width: "24px", height: "24px",
