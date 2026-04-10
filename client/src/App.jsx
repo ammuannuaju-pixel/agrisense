@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Dashboard from "./pages/Dashboard";
 import Fields from "./pages/Fields";
+import FieldsMap from "./pages/FieldsMap";
 import Alerts from "./pages/Alerts";
 import Recommendations from "./pages/Recommendations";
 import Sprinklers from "./pages/Sprinklers";
@@ -9,16 +10,23 @@ import MarketPrices from "./pages/MarketPrices";
 import WaterUsage from "./pages/WaterUsage";
 import CostTracker from "./pages/CostTracker";
 import PestAlerts from "./pages/PestAlerts";
+import Login from "./pages/Login";
 import { useLanguage } from "./LanguageContext.jsx";
+import { useAuth } from "./context/AuthContext.jsx";
+import { supabase } from "./supabaseClient";
 
 function App() {
   const [active, setActive] = useState("dashboard");
   const [menuOpen, setMenuOpen] = useState(false);
   const { language, toggleLanguage, t } = useLanguage();
+  const { session } = useAuth();
+
+  if (!session) return <Login />;
 
   const pages = {
     dashboard: <Dashboard />,
     fields: <Fields />,
+    map: <FieldsMap />,
     alerts: <Alerts />,
     recommendations: <Recommendations />,
     sprinklers: <Sprinklers />,
@@ -32,6 +40,7 @@ function App() {
   const navItems = [
     { id: "dashboard", label: "🌿 " + t("dashboard") },
     { id: "fields", label: "🌾 " + t("fields") },
+    { id: "map", label: "🗺️ " + (language === "en" ? "Fields Map" : "ഫീൽഡ് മാപ്പ്") },
     { id: "alerts", label: "🔔 " + t("alerts") },
     { id: "recommendations", label: "🧪 " + t("fertilizerAdvisor") },
     { id: "sprinklers", label: "💧 " + t("sprinklerControl") },
@@ -45,6 +54,10 @@ function App() {
   const handleNav = (id) => {
     setActive(id);
     setMenuOpen(false);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
   };
 
   return (
@@ -108,6 +121,20 @@ function App() {
             {label}
           </button>
         ))}
+
+        {/* Logout */}
+        <div style={{ marginTop: "auto", padding: "16px 24px" }}>
+          <div style={{ fontSize: "11px", color: "#999", marginBottom: "8px", wordBreak: "break-all" }}>
+            {session.user.email}
+          </div>
+          <button onClick={handleLogout} style={{
+            width: "100%", padding: "8px", borderRadius: "8px",
+            border: "1px solid #e57373", background: "#fff5f5",
+            color: "#c62828", fontWeight: "600", cursor: "pointer", fontSize: "13px",
+          }}>
+            🚪 Logout
+          </button>
+        </div>
       </aside>
 
       {/* Main content */}
