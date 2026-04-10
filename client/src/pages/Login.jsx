@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { supabase } from "../supabaseClient"; // ✅ fixed
+import { supabase } from "../supabaseClient";
 
-export default function Login() { // ✅ removed onLogin prop
+export default function Login() {
   const [mode, setMode] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,14 +15,19 @@ export default function Login() { // ✅ removed onLogin prop
     setError("");
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) setError(error.message);
-    // ✅ No onLogin call needed — AuthContext session updates automatically
     setLoading(false);
   };
 
   const handleSignup = async () => {
     setLoading(true);
     setError("");
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: "https://agrisense.pages.dev", // ✅ fixed
+      },
+    });
     if (error) {
       setError(error.message);
     } else {
