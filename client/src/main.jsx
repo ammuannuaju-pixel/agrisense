@@ -1,21 +1,16 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import App from "./App.jsx";
-import { LanguageProvider } from "./LanguageContext.jsx";
-
-createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <LanguageProvider>
-      <App />
-    </LanguageProvider>
-  </StrictMode>
-);
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
 import { AuthProvider } from "./context/AuthContext";
+import { LanguageProvider } from "./LanguageContext";
+import "leaflet/dist/leaflet.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <AuthProvider>
-      <App />
-    </AuthProvider>
+    <LanguageProvider>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </LanguageProvider>
   </React.StrictMode>
 );
